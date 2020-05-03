@@ -1,0 +1,29 @@
+---
+- name: Install BellSoft Java 4 Windows
+  when:
+    - ansible_os_family == 'Windows'
+    - ansible_env.PROCESSOR_ARCHITECTURE == 'AMD64'
+  become: yes
+  become_method: runas
+  become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+  block:
+    - win_file:
+        path: "{{ liberica_windows_local_download_path }}"
+        state: directory
+    - win_get_url:
+        url: '{{ liberica_win_download_url_fact }}'
+        dest: '{{ liberica_windows_local_download_path }}\{{ liberica_win_filename_fact }}'
+        checksum: '{{ liberica_win_checksum_fact }}'
+        checksum_algorithm: '{{ liberica_checksum_algorithm }}'
+    - win_package:
+        path: '{{ liberica_windows_local_download_path }}\{{ liberica_win_filename_fact }}'
+        state: present
+        wait: true
+  tags:
+    - windows
+    - bellsoft
+    - java
+    - jdk
+    - jre
+    - javafx
+    - msi

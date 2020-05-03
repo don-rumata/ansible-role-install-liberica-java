@@ -1,0 +1,115 @@
+---
+# https://bell-sw.com/pages/repositories#apt-repository-deb-based-linux-distributions
+- name: Install Liberica Java 4 Debian\Ubuntu
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_pkg_mgr == 'apt'
+    - ansible_architecture == 'x86_64'
+  become: yes
+  block:
+    - apt_repository:
+        repo: deb [arch=amd64] {{ http_or_https }}://apt.bell-sw.com/ stable main
+        state: present
+        filename: bellsoft
+        update_cache: no
+    - apt_key:
+        url: '{{ liberica_gpg_key_url }}'
+        state: present
+    - apt:
+        update_cache: yes
+  tags:
+    - linux
+    - ubuntu
+    - debian
+    - deb
+    - bellsoft
+    - java
+    - jdk
+    - jre
+    - javafx
+    - repo
+
+# https://bell-sw.com/pages/repositories#yum-repository-rpm-based-linux-distributions
+- name: Install Liberica Java 4 CentOS\RHEL
+  when: 
+    - ansible_os_family == 'RedHat'
+    - ansible_pkg_mgr == 'yum'
+  become: yes
+  block:
+    - yum_repository:
+        file: bellsoft
+        name: BellSoft
+        description: BellSoft Repository
+        baseurl: '{{ http_or_https }}://yum.bell-sw.com'
+        gpgkey: '{{ liberica_gpg_key_url }}'
+        enabled: yes
+        gpgcheck: yes
+        state: present
+  tags:
+    - linux
+    - centos
+    - rhel
+    - rpm
+    - bellsoft
+    - java
+    - jdk
+    - jre
+    - javafx
+    - repo
+
+# TODO.
+# # https://bell-sw.com/pages/repositories#yastzypper-repository-suse-linux
+# - name: Install Liberica Java 4 OpenSUSE
+#   when:
+#     - ansible_system == 'Linux'
+#     - ansible_os_family == 'Suse'
+#     - ansible_pkg_mgr == 'zypper'
+#   become: yes
+#   block:
+#     - template:
+#         src: repo-bellsoft.repo.j2
+#         dest: /etc/zypp/repos.d/repo-bellsoft.repo
+#     - rpm_key:
+#         key: '{{ liberica_gpg_key_url }}'
+#         state: present
+#     - shell: rpm --import '{{ liberica_gpg_key_url }}'
+#     - shell: zypper --gpg-auto-import-keys ref
+#     # - zypper_repository:
+#     #     name: 'BellSoft Repository'
+#     #     repo: '{{ http_or_https }}://yum.bell-sw.com'
+#     #     state: present
+#     #     # repo: '*'
+#     #     auto_import_keys: yes
+#     #     # runrefresh: yes
+#   tags:
+#     - linux
+#     - suse
+#     - opensuse
+#     - rpm
+#     - bellsoft
+#     - java
+#     - jdk
+#     - jre
+#     - javafx
+#     - repo
+
+- name: Install BellSoft Java 4 Linux
+  when: ansible_system == 'Linux'
+  become: yes
+  block:
+    - package:
+        name: "bellsoft-java{{ liberica_version_number }}"
+        state: present
+      when: liberica_bundle_state_exsist == false
+    - package:
+        name: "bellsoft-java{{ liberica_version_number }}-{{ liberica_bundletype }}"
+        state: present
+      when: liberica_bundle_state_exsist == true
+  tags:
+    - linux
+    - bellsoft
+    - java
+    - jdk
+    - jre
+    - javafx
+    - install

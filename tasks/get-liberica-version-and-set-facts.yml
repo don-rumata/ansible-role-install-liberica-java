@@ -1,0 +1,45 @@
+---
+# https://api.bell-sw.com/api.html
+# https://api.bell-sw.com/api.yaml
+- name: Get releases info from API
+  block:
+    - local_action:
+        module: uri
+        url: "{{ liberica_api_releases_url }}"
+        method: GET
+        return_content: yes
+      register: liberica_releases
+
+# https://jmespath.org/tutorial.html
+# https://jmespath.org/examples.html
+# https://jmespath.org/proposals/improved-filters.html
+# https://jmespath.org/proposals/pipes.html
+# https://medium.com/opsops/data-manipulation-in-ansible-json-query-769fb34655d4
+# https://parko.id.au/2018/08/16/complex-data-structures-and-the-ansible-json_query-filter/
+# РАБОТАЕТ, СКА!!!! 5+ часов, чтобы понять, что нужны `, а не '!!!1
+- name: Set facts
+  vars:
+    query_string: "[?os == `windows`] | [?packageType == `{{ liberica_win_packagetype }}`] | [?installationType == `{{ liberica_win_installationtype }}`] | [?bitness == `{{ liberica_win_bitness }}`] | [?architecture == `{{ liberica_win_architecture }}`] | [?bundleType == `{{ liberica_win_bundletype }}`] | [?EOL == `{{ liberica_win_eol }}`] | [?LTS == `{{ liberica_win_lts }}`] | [?GA == `{{ liberica_win_ga }}`] | [?latestLTS == `{{ liberica_win_latestlts }}`]"
+  block:
+    - set_fact:
+        liberica_version_number_fact: "{{ liberica_releases.json | json_query(query_feature_version) }}"
+      vars:
+        query_feature_version: "[?architecture == `x86`] | [?bundleType == `jdk-full`] | [?EOL == `false`] | [?LTS == `true`] | [?GA == `true`] | [?latestLTS == `true`].featureVersion | [0]"
+
+    - set_fact:
+        liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
+      vars:
+        query_download_url: "{{ query_string }}.downloadUrl | [0]"
+
+    - set_fact:
+        liberica_win_filename_fact: "{{ liberica_releases.json | json_query(query_filename) }}"
+      vars:
+        query_filename: "{{ query_string }}.filename | [0]"
+
+    - set_fact:
+        liberica_win_checksum_fact: "{{ liberica_releases.json | json_query(query_checksum) }}"
+      vars:
+        query_checksum: "{{ query_string }}.{{ liberica_checksum_algorithm }} | [0]"
+
+    - debug:
+        msg: "liberica_version_number_fact: {{ liberica_version_number_fact }} | liberica_win_download_url_fact: {{ liberica_win_download_url_fact }} | liberica_win_filename_fact: {{ liberica_win_filename_fact }} | liberica_win_checksum_fact: {{ liberica_win_checksum_fact }}"

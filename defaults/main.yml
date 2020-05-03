@@ -1,0 +1,39 @@
+---
+# https://api.bell-sw.com/api.html
+# https://api.bell-sw.com/api.yaml
+liberica_api_version: 1
+liberica_api_releases_url: https://api.bell-sw.com/v{{ liberica_api_version }}/liberica/releases
+
+liberica_gpg_key_url: https://download.bell-sw.com/pki/GPG-KEY-bellsoft
+
+# LTS stands for Long Term Support. It means that the release will receive security updates for a long time.
+# EOL stands for End Of Life. It means that the release is not supported anymore.
+# GA stands for General Availability. It means that the release is stable.
+# EA stands for Early Access. It means that the release is not stable.
+# Bitness describes 64 or 32-bit architecture.
+# Versions: feature, interim, patch and build are described in OpenJDK community document JEP 322
+liberica_win_packagetype: msi
+liberica_win_installationtype: installer
+liberica_win_bitness: 64
+liberica_win_architecture: x86
+liberica_win_bundletype: jdk-full
+liberica_win_eol: 'false'
+liberica_win_lts: 'true'
+liberica_win_ga: 'true'
+liberica_win_latestlts: 'true'
+
+liberica_bundle_state_exsist: 'true'
+liberica_bundletype: 'full'
+# https://bell-sw.com/pages/repositories#packages-versioning
+# full — contains the full Liberica JDK, including JavaFX and a variety of JVMs for platforms that support it.
+# lite — includes Liberica JDK with compressed modules and Server VM, without any extra packages.
+# runtime — contains Java SE Runtime Environment only.
+# runtime-full — contains Java SE Runtime Environment, including JavaFX.
+
+liberica_checksum_algorithm: 'sha1'
+
+# If you *NOT* use apt-cacher-ng or other caching proxy - select "https".
+http_or_https: http
+# http_or_https: https
+
+liberica_windows_local_download_path: '{{ ansible_env.TMP }}\liberica'
