@@ -3,11 +3,11 @@
 # https://api.bell-sw.com/api.yaml
 - name: Get releases info from API
   block:
-    - local_action:
-        module: uri
+    - uri:
         url: "{{ liberica_api_releases_url }}"
         method: GET
         return_content: yes
+      delegate_to: localhost
       register: liberica_releases
 
 # https://jmespath.org/tutorial.html
@@ -19,12 +19,28 @@
 # РАБОТАЕТ, СКА!!!! 5+ часов, чтобы понять, что нужны `, а не '!!!1
 - name: Set facts
   vars:
-    query_string: "[?os == `windows`] | [?packageType == `{{ liberica_win_packagetype }}`] | [?installationType == `{{ liberica_win_installationtype }}`] | [?bitness == `{{ liberica_win_bitness }}`] | [?architecture == `{{ liberica_win_architecture }}`] | [?bundleType == `{{ liberica_win_bundletype }}`] | [?EOL == `{{ liberica_win_eol }}`] | [?LTS == `{{ liberica_win_lts }}`] | [?GA == `{{ liberica_win_ga }}`] | [?latestLTS == `{{ liberica_win_latestlts }}`]"
+    query_string:
+      "[?os == `windows`]
+      | [?packageType == `{{ liberica_win_packagetype }}`]
+      | [?installationType == `{{ liberica_win_installationtype }}`]
+      | [?bitness == `{{ liberica_win_bitness }}`]
+      | [?architecture == `{{ liberica_win_architecture }}`]
+      | [?bundleType == `{{ liberica_win_bundletype }}`]
+      | [?EOL == `{{ liberica_win_eol }}`]
+      | [?LTS == `{{ liberica_win_lts }}`]
+      | [?GA == `{{ liberica_win_ga }}`]
+      | [?latestLTS == `{{ liberica_win_latestlts }}`]"
   block:
     - set_fact:
         liberica_version_number_fact: "{{ liberica_releases.json | json_query(query_feature_version) }}"
       vars:
-        query_feature_version: "[?architecture == `x86`] | [?bundleType == `jdk-full`] | [?EOL == `false`] | [?LTS == `true`] | [?GA == `true`] | [?latestLTS == `true`].featureVersion | [0]"
+        query_feature_version:
+          "[?architecture == `x86`]
+          | [?bundleType == `jdk-full`]
+          | [?EOL == `false`]
+          | [?LTS == `true`]
+          | [?GA == `true`]
+          | [?latestLTS == `true`].featureVersion | [0]"
 
     - set_fact:
         liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
@@ -42,4 +58,9 @@
         query_checksum: "{{ query_string }}.{{ liberica_checksum_algorithm }} | [0]"
 
     - debug:
-        msg: "liberica_version_number_fact: {{ liberica_version_number_fact }} | liberica_win_download_url_fact: {{ liberica_win_download_url_fact }} | liberica_win_filename_fact: {{ liberica_win_filename_fact }} | liberica_win_checksum_fact: {{ liberica_win_checksum_fact }}"
+        msg: >
+          "liberica_version_number_fact: {{ liberica_version_number_fact }}
+          ||| liberica_win_download_url_fact: {{ liberica_win_download_url_fact }}
+          ||| liberica_win_filename_fact: {{ liberica_win_filename_fact }}
+          ||| liberica_win_checksum_fact: {{ liberica_win_checksum_fact }}"
+          ||| {{ query_string }}

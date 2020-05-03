@@ -46,8 +46,8 @@ galaxy_info:
     - firefox
     - desktop
     - windows
-    - windows-7
-    - windows-10
+    - windows7
+    - windows10
     - java
     - jdk
     - jre
