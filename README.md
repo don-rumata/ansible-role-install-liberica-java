@@ -10,6 +10,7 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
   platforms:
     - name: Fedora
       versions:
+        - 32
         - 31
         - 30
     - name: Ubuntu

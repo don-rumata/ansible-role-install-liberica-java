@@ -30,10 +30,9 @@
     - repo
 
 # https://bell-sw.com/pages/repositories#yum-repository-rpm-based-linux-distributions
-- name: Install Liberica Java 4 CentOS\RHEL
+- name: Install Liberica Java 4 Fedora\CentOS\RHEL
   when:
     - ansible_os_family == 'RedHat'
-    - ansible_pkg_mgr == 'yum'
   become: yes
   block:
     - yum_repository:
@@ -98,11 +97,11 @@
   become: yes
   block:
     - package:
-        name: "bellsoft-java{{ liberica_version_number }}"
+        name: "bellsoft-java{{ liberica_version_number_fact }}"
         state: present
       when: liberica_bundle_state_exsist == 'false'
     - package:
-        name: "bellsoft-java{{ liberica_version_number }}-{{ liberica_bundletype }}"
+        name: "bellsoft-java{{ liberica_version_number_fact }}-{{ liberica_bundletype }}"
         state: present
       when: liberica_bundle_state_exsist == 'true'
   tags:
