@@ -56,6 +56,9 @@ liberica_api_releases_url: https://api.bell-sw.com/v{{ liberica_api_version }}/l
 
 liberica_gpg_key_url: https://download.bell-sw.com/pki/GPG-KEY-bellsoft
 
+# If the value is not defined, the last supported LTS will be selected.
+# liberica_java_version: 11
+
 # LTS stands for Long Term Support. It means that the release will receive security updates for a long time.
 # EOL stands for End Of Life. It means that the release is not supported anymore.
 # GA stands for General Availability. It means that the release is stable.

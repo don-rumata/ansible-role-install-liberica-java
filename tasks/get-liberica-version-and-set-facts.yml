@@ -17,6 +17,8 @@
 # https://medium.com/opsops/data-manipulation-in-ansible-json-query-769fb34655d4
 # https://parko.id.au/2018/08/16/complex-data-structures-and-the-ansible-json_query-filter/
 # РАБОТАЕТ, СКА!!!! 5+ часов, чтобы понять, что нужны `, а не '!!!1
+# https://stackoverflow.com/a/60305572/5430535
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#defaulting-undefined-variables
 - name: Set facts
   vars:
     query_string:
@@ -32,7 +34,7 @@
       | [?latestLTS == `{{ liberica_win_latestlts }}`]"
   block:
     - set_fact:
-        liberica_version_number_fact: "{{ liberica_releases.json | json_query(query_feature_version) }}"
+        liberica_version_number_fact: "{{ liberica_java_version | default(liberica_releases.json | json_query(query_feature_version)) }}"
       vars:
         query_feature_version:
           "[?architecture == `{{ liberica_common_architecture }}`]
