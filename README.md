@@ -12,7 +12,6 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
       versions:
         - 32
         - 31
-        - 30
     - name: Ubuntu
       versions:
         - focal
@@ -21,7 +20,6 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
         - cosmic
         - bionic
         - xenial
-        - trusty
     - name: Debian
       version:
         - jessie

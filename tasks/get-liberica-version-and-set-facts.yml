@@ -35,12 +35,12 @@
         liberica_version_number_fact: "{{ liberica_releases.json | json_query(query_feature_version) }}"
       vars:
         query_feature_version:
-          "[?architecture == `x86`]
-          | [?bundleType == `jdk-full`]
-          | [?EOL == `false`]
-          | [?LTS == `true`]
-          | [?GA == `true`]
-          | [?latestLTS == `true`].featureVersion | [0]"
+          "[?architecture == `{{ liberica_common_architecture }}`]
+          | [?bundleType == `{{ liberica_common_bundletype }}`]
+          | [?EOL == `{{ liberica_common_eol }}`]
+          | [?LTS == `{{ liberica_common_lts }}`]
+          | [?GA == `{{ liberica_common_ga }}`]
+          | [?latestLTS == `{{ liberica_common_latestlts }}`].featureVersion | [0]"
 
     - set_fact:
         liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
