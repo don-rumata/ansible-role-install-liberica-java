@@ -1,5 +1,7 @@
 # Ansible Role: Install Liberica Java
 
+[![License][license-image]][license-url]
+
 Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
 
 ## Work on
@@ -143,3 +145,6 @@ Apache License, Version 2.0
 ## Thanks
 
 - [Aleksei Voitylov](mailto:aleksei.voitylov@bell-sw.com)
+
+[license-image]: https://img.shields.io/github/license/don-rumata/ansible-role-install-liberica-java.svg
+[license-url]: https://opensource.org/licenses/Apache-2.0
