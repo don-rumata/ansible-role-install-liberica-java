@@ -33,10 +33,10 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
       versions:
         - 8
         - 7
-    # TODO.
-    # - name: opensuse
-    #   vesrion:
-    #     - tumbleweed
+    - name: opensuse
+      vesrion:
+        - tumbleweed
+        - 15.1
     - name: windows
       version:
         - 2008x64 (7 64bit)
@@ -139,8 +139,6 @@ Apache License, Version 2.0
 ## TODO
 
 - Add tests.
-
-- Add openSUSE support.
 
 ## Thanks
 

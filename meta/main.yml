@@ -32,18 +32,24 @@ galaxy_info:
       versions:
         - 8
         - 7
-    # - name: opensuse
-    #   vesrion:
-    #     - tumbleweed
+    - name: opensuse
+      vesrion:
+        - tumbleweed
+        - 15.1
     - name: Windows
       version:
         - 2008x64
         - 2008x86
+        - 2019
 
   galaxy_tags:
     - linux
-    - firefox
-    - desktop
+    - ubuntu
+    - debian
+    - suse
+    - opensuse
+    - centos
+    - fedora
     - windows
     - windows7
     - windows10

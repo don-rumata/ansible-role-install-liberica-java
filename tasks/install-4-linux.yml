@@ -30,7 +30,7 @@
     - repo
 
 # https://bell-sw.com/pages/repositories#yum-repository-rpm-based-linux-distributions
-- name: Install Liberica Java 4 Fedora\CentOS\RHEL
+- name: Add repo 4 Liberica Java 4 Fedora\CentOS\RHEL
   when:
     - ansible_os_family == 'RedHat'
   become: yes
@@ -56,41 +56,30 @@
     - javafx
     - repo
 
-# TODO.
-# # https://bell-sw.com/pages/repositories#yastzypper-repository-suse-linux
-# - name: Install Liberica Java 4 OpenSUSE
-#   when:
-#     - ansible_system == 'Linux'
-#     - ansible_os_family == 'Suse'
-#     - ansible_pkg_mgr == 'zypper'
-#   become: yes
-#   block:
-#     - template:
-#         src: repo-bellsoft.repo.j2
-#         dest: /etc/zypp/repos.d/repo-bellsoft.repo
-#     - rpm_key:
-#         key: '{{ liberica_gpg_key_url }}'
-#         state: present
-#     - shell: rpm --import '{{ liberica_gpg_key_url }}'
-#     - shell: zypper --gpg-auto-import-keys ref
-#     # - zypper_repository:
-#     #     name: 'BellSoft Repository'
-#     #     repo: '{{ http_or_https }}://yum.bell-sw.com'
-#     #     state: present
-#     #     # repo: '*'
-#     #     auto_import_keys: yes
-#     #     # runrefresh: yes
-#   tags:
-#     - linux
-#     - suse
-#     - opensuse
-#     - rpm
-#     - bellsoft
-#     - java
-#     - jdk
-#     - jre
-#     - javafx
-#     - repo
+# https://bell-sw.com/pages/repositories#yastzypper-repository-suse-linux
+- name: Add repo 4 Liberica Java 4 OpenSUSE
+  when:
+    - ansible_system == 'Linux'
+    - ansible_os_family == 'Suse'
+    - ansible_pkg_mgr == 'zypper'
+  become: yes
+  zypper_repository:
+    name: 'BellSoft Repository'
+    repo: '{{ http_or_https }}://yum.bell-sw.com'
+    state: present
+    auto_import_keys: yes
+    runrefresh: yes
+  tags:
+    - linux
+    - suse
+    - opensuse
+    - rpm
+    - bellsoft
+    - java
+    - jdk
+    - jre
+    - javafx
+    - repo
 
 - name: Install BellSoft Java 4 Linux
   when: ansible_system == 'Linux'
