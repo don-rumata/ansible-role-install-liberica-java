@@ -12,27 +12,25 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
   platforms:
     - name: Fedora
       versions:
-        - 32
         - 31
+        - 32
     - name: Ubuntu
       versions:
-        - focal
-        - eoan
-        - disco
-        - cosmic
-        - bionic
         - xenial
+        - bionic
+        - focal
     - name: Debian
       version:
         - jessie
         - stretch
         - buster
+        - oldstable
         - stable
         - testing
     - name: EL (CentOS)
       versions:
-        - 8
         - 7
+        - 8
     - name: opensuse
       vesrion:
         - tumbleweed
@@ -138,7 +136,8 @@ Apache License, Version 2.0
 
 ## TODO
 
-- Add tests.
+- ~~Add tests.~~
+- Add more tests.
 
 ## Thanks
 
