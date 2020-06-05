@@ -33,7 +33,7 @@ parameters:
 
   parameter-working-directory:
     type: string
-    default: "~/.ansible/roles/ansible-role-install-snap"
+    default: "~/.ansible/roles/ansible-role-liberica-java"
 
   parameter-resource-class:
     type: string
