@@ -1,10 +1,19 @@
 ---
+# https://groups.google.com/forum/#!topic/ansible-project/yO8dmKvNUIY
+# https://github.com/ansible-ThoTeam/nexus3-oss/issues/205
 - name: Install jmespath 4 Linux
   when:
     - ansible_system == 'Linux'
-    # - not (ansible_distribution == 'Ubuntu')
   # become: yes
   pip:
     name:
       - jmespath
     state: present
+
+- name: Install GPG agent 4 Linux
+  when: ansible_system == 'Linux'
+  become: yes
+  block:
+    - package:
+        name: gnupg-agent
+        state: present
