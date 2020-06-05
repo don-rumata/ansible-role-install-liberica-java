@@ -1,0 +1,10 @@
+---
+- name: Install jmespath 4 Linux
+  when:
+    - ansible_system == 'Linux'
+    - not (ansible_distribution == 'Ubuntu')
+  # become: yes
+  pip:
+    name:
+      - jmespath
+    state: present
