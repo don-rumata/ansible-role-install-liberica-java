@@ -1,4 +1,6 @@
 ---
+- import_tasks: update-cache.yml
+
 - import_tasks: install-dependencies.yml
 
 - import_tasks: get-liberica-version-and-set-facts.yml
