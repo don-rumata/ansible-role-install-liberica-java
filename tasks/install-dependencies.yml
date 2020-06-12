@@ -21,8 +21,8 @@
 - name: Create directory structure 4 test in docker
   when:
     - ansible_system == 'Linux'
-    - ansible_virtualization_type != 'docker'
+    - ansible_virtualization_type == 'docker'
   become: yes
   file:
-    path: /usr/share/man/man1/
+    path: /usr/share/man/man1
     state: directory
