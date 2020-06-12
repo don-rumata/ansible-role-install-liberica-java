@@ -10,8 +10,11 @@
       - jmespath
     state: present
 
-- name: Install GPG agent 4 Linux
-  when: ansible_system == 'Linux'
+- name: Install GPG agent 4 deb-based distro
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_pkg_mgr == 'apt'
+    - ansible_architecture == 'x86_64'
   become: yes
   block:
     - package:
