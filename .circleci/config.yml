@@ -182,11 +182,11 @@ workflows:
     jobs:
       # - job-run-ansible-in-fedora-31
       # - job-run-ansible-in-fedora-32
-      # - job-run-ansible-in-ubuntu-16-04
-      # - job-run-ansible-in-ubuntu-18-04
+      - job-run-ansible-in-ubuntu-16-04
+      - job-run-ansible-in-ubuntu-18-04
       - job-run-ansible-in-ubuntu-20-04
-      # - job-run-ansible-in-debian-oldstable
-      # - job-run-ansible-in-debian-stable
+      - job-run-ansible-in-debian-oldstable
+      - job-run-ansible-in-debian-stable
       # # TODO
       # # - job-run-ansible-in-debian-testing
       # - job-run-ansible-in-centos-7
