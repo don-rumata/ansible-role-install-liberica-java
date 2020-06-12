@@ -89,7 +89,8 @@
         name: "bellsoft-java{{ liberica_version_number_fact }}"
         state: present
       when: liberica_bundle_state_exsist == 'false'
-    - package:
+    # - package:
+    - apt:
         name: "bellsoft-java{{ liberica_version_number_fact }}-{{ liberica_bundletype }}"
         state: present
       when: liberica_bundle_state_exsist == 'true'
