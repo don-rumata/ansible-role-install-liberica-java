@@ -1,4 +1,13 @@
 ---
+- name: Install GPG agent 4 deb-based distro
+  when:
+    - ansible_system == 'Linux'
+  become: yes
+  package:
+    name:
+      - pip3
+    state: present
+
 # https://groups.google.com/forum/#!topic/ansible-project/yO8dmKvNUIY
 # https://github.com/ansible-ThoTeam/nexus3-oss/issues/205
 - name: Install jmespath 4 Linux
@@ -16,10 +25,9 @@
     - ansible_pkg_mgr == 'apt'
     - ansible_architecture == 'x86_64'
   become: yes
-  block:
-    - package:
-        name: gnupg-agent
-        state: present
+  apt:
+    name: gnupg-agent
+    state: present
 
 - name: Create directory structure 4 test in docker
   when:
