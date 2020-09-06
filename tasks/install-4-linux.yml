@@ -7,16 +7,14 @@
     - ansible_architecture == 'x86_64'
   become: yes
   block:
+    - apt_key:
+        url: '{{ liberica_gpg_key_url }}'
+        state: present
     - apt_repository:
         repo: deb [arch=amd64] {{ http_or_https }}://apt.bell-sw.com/ stable main
         state: present
         filename: bellsoft
-        update_cache: no
-    - apt_key:
-        url: '{{ liberica_gpg_key_url }}'
-        state: present
-    - apt:
-        update_cache: yes
+        mode: 644
   tags:
     - linux
     - ubuntu
@@ -34,16 +32,15 @@
   when:
     - ansible_os_family == 'RedHat'
   become: yes
-  block:
-    - yum_repository:
-        file: bellsoft
-        name: BellSoft
-        description: BellSoft Repository
-        baseurl: '{{ http_or_https }}://yum.bell-sw.com'
-        gpgkey: '{{ liberica_gpg_key_url }}'
-        enabled: yes
-        gpgcheck: yes
-        state: present
+  yum_repository:
+    file: bellsoft
+    name: BellSoft
+    description: BellSoft Repository
+    baseurl: '{{ http_or_https }}://yum.bell-sw.com'
+    gpgkey: '{{ liberica_gpg_key_url }}'
+    enabled: yes
+    gpgcheck: yes
+    state: present
   tags:
     - linux
     - centos
@@ -84,15 +81,9 @@
 - name: Install BellSoft Java 4 Linux
   when: ansible_system == 'Linux'
   become: yes
-  block:
-    - package:
-        name: "bellsoft-java{{ liberica_version_number_fact }}"
-        state: present
-      when: liberica_bundle_state_exsist == 'false'
-    - package:
-        name: "bellsoft-java{{ liberica_version_number_fact }}-{{ liberica_bundletype }}"
-        state: present
-      when: liberica_bundle_state_exsist == 'true'
+  package:
+    name: "{{ liberica_java_linux_package_name_fact }}"
+    state: present
   tags:
     - linux
     - bellsoft

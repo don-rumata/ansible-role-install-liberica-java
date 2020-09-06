@@ -6,6 +6,7 @@ liberica_api_releases_url: https://api.bell-sw.com/v{{ liberica_api_version }}/l
 
 liberica_gpg_key_url: https://download.bell-sw.com/pki/GPG-KEY-bellsoft
 
+# If the value is not defined, the last supported LTS will be selected.
 # liberica_java_version: 11
 
 # LTS stands for Long Term Support. It means that the release will receive security updates for a long time.
@@ -16,31 +17,27 @@ liberica_gpg_key_url: https://download.bell-sw.com/pki/GPG-KEY-bellsoft
 # Versions: feature, interim, patch and build are described in OpenJDK community document JEP 322
 
 #--- For all ---#
-liberica_common_architecture: x86
-liberica_common_bundletype: jdk-full
-liberica_common_eol: 'false'
-liberica_common_lts: 'true'
-liberica_common_ga: 'true'
-liberica_common_latestlts: 'true'
+liberica_java_architecture: x86
+liberica_java_bundletype: jdk-full
+liberica_java_eol: 'false'
+liberica_java_lts: 'true'
+liberica_java_ga: 'true'
+liberica_java_latestlts: 'true'
 
 #--- Windows only ---#
 liberica_win_packagetype: msi
 liberica_win_installationtype: installer
 liberica_win_bitness: 64
 liberica_win_architecture: x86
-liberica_win_bundletype: jdk-full
-liberica_win_eol: 'false'
-liberica_win_lts: 'true'
-liberica_win_ga: 'true'
-liberica_win_latestlts: 'true'
 
-liberica_bundle_state_exsist: 'true'
-liberica_bundletype: 'full'
+#--- About bundle type ---#
 # https://bell-sw.com/pages/repositories#packages-versioning
-# full — contains the full Liberica JDK, including JavaFX and a variety of JVMs for platforms that support it.
-# lite — includes Liberica JDK with compressed modules and Server VM, without any extra packages.
-# runtime — contains Java SE Runtime Environment only.
-# runtime-full — contains Java SE Runtime Environment, including JavaFX.
+
+# jdk - a regular package that contains the full Liberica JDK, not including JavaFX.
+# jdk-full - contains the full Liberica JDK, including JavaFX and a variety of JVMs for platforms that support it.
+# jdk-lite - includes Liberica JDK with compressed modules and Server VM, without any extra packages.
+# jre - contains Java SE Runtime Environment only.
+# jre-full - contains Java SE Runtime Environment, including JavaFX.
 
 liberica_checksum_algorithm: 'sha1'
 

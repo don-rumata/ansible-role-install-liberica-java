@@ -1,6 +1,6 @@
 # Ansible Role: Install Liberica Java
 
-[![License][license-image]][license-url] [![Ansible Galaxy][ansible-galaxy-image]][ansible-galaxy-url] [![CircleCI][circleci-image]][circleci-url]
+[![License][license-image]][license-url] [![Ansible Galaxy][ansible-galaxy-image]][ansible-galaxy-url] [![CircleCI][circleci-image]][circleci-url] [![Ansible Galaxy Quality][ansible-galaxy-quality-image]][ansible-galaxy-url]
 
 Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
 
@@ -42,9 +42,11 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
         - 2019 (10 64bit)
 ```
 
-## Requirements
+## Dependencies
 
 min_ansible_version: 2.7
+
+In Ansible controller: [python-jmespath](https://repology.org/project/python:jmespath)
 
 ## Role Variables
 
@@ -65,32 +67,29 @@ liberica_gpg_key_url: https://download.bell-sw.com/pki/GPG-KEY-bellsoft
 # EA stands for Early Access. It means that the release is not stable.
 # Bitness describes 64 or 32-bit architecture.
 # Versions: feature, interim, patch and build are described in OpenJDK community document JEP 322
+
 #--- For all ---#
-liberica_common_architecture: x86
-liberica_common_bundletype: jdk-full
-liberica_common_eol: 'false'
-liberica_common_lts: 'true'
-liberica_common_ga: 'true'
-liberica_common_latestlts: 'true'
+liberica_java_architecture: x86
+liberica_java_bundletype: jdk-full
+liberica_java_eol: 'false'
+liberica_java_lts: 'true'
+liberica_java_ga: 'true'
+liberica_java_latestlts: 'true'
 
 #--- Windows only ---#
 liberica_win_packagetype: msi
 liberica_win_installationtype: installer
 liberica_win_bitness: 64
 liberica_win_architecture: x86
-liberica_win_bundletype: jdk-full
-liberica_win_eol: 'false'
-liberica_win_lts: 'true'
-liberica_win_ga: 'true'
-liberica_win_latestlts: 'true'
 
-liberica_bundle_state_exsist: 'true'
-liberica_bundletype: 'full'
+#--- About bundle type ---#
 # https://bell-sw.com/pages/repositories#packages-versioning
-# full — contains the full Liberica JDK, including JavaFX and a variety of JVMs for platforms that support it.
-# lite — includes Liberica JDK with compressed modules and Server VM, without any extra packages.
-# runtime — contains Java SE Runtime Environment only.
-# runtime-full — contains Java SE Runtime Environment, including JavaFX.
+
+# jdk - a regular package that contains the full Liberica JDK, not including JavaFX.
+# jdk-full - contains the full Liberica JDK, including JavaFX and a variety of JVMs for platforms that support it.
+# jdk-lite - includes Liberica JDK with compressed modules and Server VM, without any extra packages.
+# jre - contains Java SE Runtime Environment only.
+# jre-full - contains Java SE Runtime Environment, including JavaFX.
 
 liberica_checksum_algorithm: 'sha1'
 
@@ -111,6 +110,8 @@ Quick config WinRM for Windows: <https://ru.stackoverflow.com/a/949971/191416>
 
 ## Example Playbooks
 
+### I
+
 Install latest stable supported LTS `JRE+JDK+JavaFX` on Windows or Linux over package manager of you distro:
 
 `install-liberica-java.yml`:
@@ -125,6 +126,97 @@ Install latest stable supported LTS `JRE+JDK+JavaFX` on Windows or Linux over pa
     - ansible-role-install-liberica-java
   tasks:
 ```
+
+### II
+
+Install only Java SE Runtime Environment `v8`:
+
+`install-liberica-java.yml`:
+
+```yaml
+- name: Install Liberica Java
+  hosts: all
+  strategy: free
+  serial:
+    - "100%"
+  roles:
+    - ansible-role-install-liberica-java
+  vars:
+    liberica_java_version: 8
+    liberica_java_bundletype: jre
+  tasks:
+```
+
+### III
+
+Install only Java SE Runtime Environment `v8`, Liberica JDK with compressed modules and Server VM, without any extra packages `v11` and full Liberica JDK, not including JavaFX `v14` in Linux and Windows:
+
+`my-inventory.ini`:
+
+```ini
+[linux-hosts]
+ubuntu.local
+
+[win-hosts]
+win7-64
+```
+
+`install-liberica-java.yml`:
+
+```yaml
+- name: Install Liberica Java
+  hosts: all
+  strategy: free
+  serial:
+    - "100%"
+  roles:
+    - role: ansible-role-install-liberica-java
+      liberica_java_version: 8
+      liberica_java_bundletype: jre
+    - role: ansible-role-install-liberica-java
+      liberica_java_version: 11
+      liberica_java_bundletype: jdk-lite
+    - role: ansible-role-install-liberica-java
+      liberica_java_version: 14
+      liberica_java_bundletype: jdk
+  tasks:
+```
+
+```bash
+ansible-playbook -i ./my-inventory.ini ./install-liberica-java.yml
+```
+
+Result:
+
+```bash
+aptitude search bellsoft
+```
+
+```none
+p   bellsoft-java11                                           - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java11-full                                      - BellSoft Liberica is a build of OpenJDK.
+i   bellsoft-java11-lite                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java11-runtime                                   - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java11-runtime-full                              - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java12                                           - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java12-lite                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java13                                           - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java13-full                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java13-lite                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java13-runtime                                   - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java13-runtime-full                              - BellSoft Liberica is a build of OpenJDK.
+i   bellsoft-java14                                           - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java14-full                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java14-lite                                      - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java14-runtime                                   - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java14-runtime-full                              - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java8                                            - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java8-full                                       - BellSoft Liberica is a build of OpenJDK.
+i   bellsoft-java8-runtime                                    - BellSoft Liberica is a build of OpenJDK.
+p   bellsoft-java8-runtime-full                               - BellSoft Liberica is a build of OpenJDK.
+```
+
+![Liberica Java in Windows 7](pics/liberica-4-win.png "Liberica Java in Windows 7")
 
 ## License
 
@@ -151,3 +243,5 @@ Apache License, Version 2.0
 
 [circleci-image]: https://circleci.com/gh/don-rumata/ansible-role-install-liberica-java.svg?style=shield
 [circleci-url]: https://circleci.com/gh/don-rumata/ansible-role-install-liberica-java
+
+[ansible-galaxy-quality-image]: https://img.shields.io/ansible/quality/48410

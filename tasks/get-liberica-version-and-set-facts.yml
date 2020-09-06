@@ -2,13 +2,12 @@
 # https://api.bell-sw.com/api.html
 # https://api.bell-sw.com/api.yaml
 - name: Get releases info from API
-  block:
-    - uri:
-        url: "{{ liberica_api_releases_url }}"
-        method: GET
-        return_content: yes
-      delegate_to: localhost
-      register: liberica_releases
+  uri:
+    url: "{{ liberica_api_releases_url }}"
+    method: GET
+    return_content: yes
+  delegate_to: localhost
+  register: liberica_releases
 
 # https://jmespath.org/tutorial.html
 # https://jmespath.org/examples.html
@@ -19,50 +18,86 @@
 # РАБОТАЕТ, СКА!!!! 5+ часов, чтобы понять, что нужны `, а не '!!!1
 # https://stackoverflow.com/a/60305572/5430535
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html#defaulting-undefined-variables
-- name: Set facts
+- name: Set common facts
   vars:
-    query_string:
-      "[?os == `windows`]
+    query_feature_java_version:
+      "[?architecture == `{{ liberica_java_architecture }}`]
+      | [?bundleType == `{{ liberica_java_bundletype }}`]
+      | [?EOL == `{{ liberica_java_eol }}`]
+      | [?LTS == `{{ liberica_java_lts }}`]
+      | [?GA == `{{ liberica_java_ga }}`]
+      | [?latestLTS == `{{ liberica_java_latestlts }}`].featureVersion | [0]"
+  set_fact:
+    liberica_version_number_fact: "{{ liberica_java_version | default(liberica_releases.json | json_query(query_feature_java_version)) }}"
+
+- name: Set facts 4 Windows
+  when: ansible_os_family == 'Windows'
+  vars:
+    query_string_for_windows:
+      "[?featureVersion == `{{ liberica_version_number_fact }}`]
       | [?packageType == `{{ liberica_win_packagetype }}`]
       | [?installationType == `{{ liberica_win_installationtype }}`]
       | [?bitness == `{{ liberica_win_bitness }}`]
       | [?architecture == `{{ liberica_win_architecture }}`]
-      | [?bundleType == `{{ liberica_win_bundletype }}`]
-      | [?EOL == `{{ liberica_win_eol }}`]
-      | [?LTS == `{{ liberica_win_lts }}`]
-      | [?GA == `{{ liberica_win_ga }}`]
-      | [?latestLTS == `{{ liberica_win_latestlts }}`]"
+      | [?bundleType == `{{ liberica_java_bundletype }}`]"
+      # | [?EOL == `{{ liberica_java_eol }}`]"
+    query_download_url: "{{ query_string_for_windows }}.downloadUrl | [0]"
+    query_filename: "{{ query_string_for_windows }}.filename | [0]"
+    query_checksum: "{{ query_string_for_windows }}.{{ liberica_checksum_algorithm }} | [0]"
+  set_fact:
+    liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
+    liberica_win_filename_fact: "{{ liberica_releases.json | json_query(query_filename) }}"
+    liberica_win_checksum_fact: "{{ liberica_releases.json | json_query(query_checksum) }}"
+
+- debug:
+    msg: >
+      "liberica_version_number_fact: {{ liberica_version_number_fact }}
+      ||| liberica_win_download_url_fact: {{ liberica_win_download_url_fact }}
+      ||| liberica_win_filename_fact: {{ liberica_win_filename_fact }}
+      ||| liberica_win_checksum_fact: {{ liberica_win_checksum_fact }}"
+    # ||| query_string_for_windows: {{ query_string_for_windows }}
+  when: ansible_os_family == 'Windows'
+
+# Наверное можно сделать как-то красивее, но я пока не знаю.
+# https://bell-sw.com/pages/repositories/#packages-versioning
+- name: Set facts 4 Linux
+  when: ansible_system == 'Linux'
   block:
     - set_fact:
-        liberica_version_number_fact: "{{ liberica_java_version | default(liberica_releases.json | json_query(query_feature_version)) }}"
-      vars:
-        query_feature_version:
-          "[?architecture == `{{ liberica_common_architecture }}`]
-          | [?bundleType == `{{ liberica_common_bundletype }}`]
-          | [?EOL == `{{ liberica_common_eol }}`]
-          | [?LTS == `{{ liberica_common_lts }}`]
-          | [?GA == `{{ liberica_common_ga }}`]
-          | [?latestLTS == `{{ liberica_common_latestlts }}`].featureVersion | [0]"
-
+        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}"
+      when: liberica_java_bundletype == 'jdk'
     - set_fact:
-        liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
-      vars:
-        query_download_url: "{{ query_string }}.downloadUrl | [0]"
-
+        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-full"
+      when: liberica_java_bundletype == 'jdk-full'
     - set_fact:
-        liberica_win_filename_fact: "{{ liberica_releases.json | json_query(query_filename) }}"
-      vars:
-        query_filename: "{{ query_string }}.filename | [0]"
-
+        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-lite"
+      when:
+        - liberica_java_bundletype == 'jdk-lite'
+        - liberica_java_version != 8
     - set_fact:
-        liberica_win_checksum_fact: "{{ liberica_releases.json | json_query(query_checksum) }}"
-      vars:
-        query_checksum: "{{ query_string }}.{{ liberica_checksum_algorithm }} | [0]"
+        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-runtime"
+      when: liberica_java_bundletype == 'jre'
+    - set_fact:
+        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-runtime-full"
+      when: liberica_java_bundletype == 'jre-full'
 
-    - debug:
-        msg: >
-          "liberica_version_number_fact: {{ liberica_version_number_fact }}
-          ||| liberica_win_download_url_fact: {{ liberica_win_download_url_fact }}
-          ||| liberica_win_filename_fact: {{ liberica_win_filename_fact }}
-          ||| liberica_win_checksum_fact: {{ liberica_win_checksum_fact }}"
-          ||| {{ query_string }}
+    # "bundleType": "jdk",
+    # "bundleType": "jdk-full",
+    # "bundleType": "jdk-lite",
+    # "bundleType": "jre",
+    # "bundleType": "jre-full",
+
+    # bellsoft-java11
+    # bellsoft-java11-full
+    # bellsoft-java11-lite
+    # bellsoft-java11-runtime
+    # bellsoft-java11-runtime-full
+    # bellsoft-java14
+    # bellsoft-java14-full
+    # bellsoft-java14-lite
+    # bellsoft-java14-runtime
+    # bellsoft-java14-runtime-full
+    # bellsoft-java8
+    # bellsoft-java8-full
+    # bellsoft-java8-runtime
+    # bellsoft-java8-runtime-full
