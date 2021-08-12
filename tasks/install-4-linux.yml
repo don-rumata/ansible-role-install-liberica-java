@@ -14,7 +14,7 @@
         repo: deb [arch=amd64] {{ http_or_https }}://apt.bell-sw.com/ stable main
         state: present
         filename: bellsoft
-        mode: 644
+        mode: '644'
   tags:
     - linux
     - ubuntu
