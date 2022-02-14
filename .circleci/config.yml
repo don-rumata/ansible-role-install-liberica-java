@@ -55,11 +55,11 @@ executors:
       # - image: geerlingguy/docker-fedora-32-ansible:latest
       - image: diodonfrost/fedora-32-ansible
 
-  executor-ubuntu-16-04:
-    resource_class: << pipeline.parameters.parameter-resource-class >>
-    working_directory: << pipeline.parameters.parameter-working-directory >>
-    docker:
-      - image: geerlingguy/docker-ubuntu1604-ansible
+  # executor-ubuntu-16-04:
+  #   resource_class: << pipeline.parameters.parameter-resource-class >>
+  #   working_directory: << pipeline.parameters.parameter-working-directory >>
+  #   docker:
+  #     - image: geerlingguy/docker-ubuntu1604-ansible
 
   executor-ubuntu-18-04:
     resource_class: << pipeline.parameters.parameter-resource-class >>
@@ -73,11 +73,11 @@ executors:
     docker:
       - image: geerlingguy/docker-ubuntu2004-ansible
 
-  executor-debian-oldstable:
-    resource_class: << pipeline.parameters.parameter-resource-class >>
-    working_directory: << pipeline.parameters.parameter-working-directory >>
-    docker:
-      - image: geerlingguy/docker-debian9-ansible
+  # executor-debian-oldstable:
+  #   resource_class: << pipeline.parameters.parameter-resource-class >>
+  #   working_directory: << pipeline.parameters.parameter-working-directory >>
+  #   docker:
+  #     - image: geerlingguy/docker-debian9-ansible
 
   executor-debian-stable:
     resource_class: << pipeline.parameters.parameter-resource-class >>
@@ -122,11 +122,11 @@ jobs:
       - checkout
       - command-run-ansible-test
 
-  job-run-ansible-in-ubuntu-16-04:
-    executor: executor-ubuntu-16-04
-    steps:
-      - checkout
-      - command-run-ansible-test
+  # job-run-ansible-in-ubuntu-16-04:
+  #   executor: executor-ubuntu-16-04
+  #   steps:
+  #     - checkout
+  #     - command-run-ansible-test
 
   job-run-ansible-in-ubuntu-18-04:
     executor: executor-ubuntu-18-04
@@ -140,11 +140,11 @@ jobs:
       - checkout
       - command-run-ansible-test
 
-  job-run-ansible-in-debian-oldstable:
-    executor: executor-debian-oldstable
-    steps:
-      - checkout
-      - command-run-ansible-test
+  # job-run-ansible-in-debian-oldstable:
+  #   executor: executor-debian-oldstable
+  #   steps:
+  #     - checkout
+  #     - command-run-ansible-test
 
   job-run-ansible-in-debian-stable:
     executor: executor-debian-stable
@@ -182,10 +182,10 @@ workflows:
     jobs:
       - job-run-ansible-in-fedora-31
       - job-run-ansible-in-fedora-32
-      - job-run-ansible-in-ubuntu-16-04
+      # - job-run-ansible-in-ubuntu-16-04
       - job-run-ansible-in-ubuntu-18-04
       - job-run-ansible-in-ubuntu-20-04
-      - job-run-ansible-in-debian-oldstable
+      # - job-run-ansible-in-debian-oldstable
       - job-run-ansible-in-debian-stable
       # TODO
       # - job-run-ansible-in-debian-testing
