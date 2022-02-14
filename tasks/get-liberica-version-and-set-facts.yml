@@ -5,9 +5,18 @@
   uri:
     url: "{{ liberica_api_releases_url }}"
     method: GET
+    body_format: raw
     return_content: yes
   delegate_to: localhost
   register: liberica_releases
+
+# FUCKING DIRTY HACK!
+- name: Set intermediate variable
+  set_fact:
+    liberica_releases_intermediate_variable_fact:
+      "{{ liberica_releases.content
+      | to_json
+      | from_json }}"
 
 # https://jmespath.org/tutorial.html
 # https://jmespath.org/examples.html
@@ -28,7 +37,16 @@
       | [?GA == `{{ liberica_java_ga }}`]
       | [?latestLTS == `{{ liberica_java_latestlts }}`].featureVersion | [0]"
   set_fact:
-    liberica_version_number_fact: "{{ liberica_java_version | default(liberica_releases.json | json_query(query_feature_java_version)) }}"
+    liberica_version_number_fact:
+      "{{ liberica_java_version
+      | default(liberica_releases_intermediate_variable_fact
+      | json_query(query_feature_java_version))}}"
+
+- name: Alarm
+  fail:
+    msg:
+      liberica_version_number_fact variable is empty. You have to set value to this variable.
+  when: liberica_version_number_fact | length == 0
 
 - name: Set facts 4 Windows
   when: ansible_os_family == 'Windows'
@@ -45,9 +63,17 @@
     query_filename: "{{ query_string_for_windows }}.filename | [0]"
     query_checksum: "{{ query_string_for_windows }}.{{ liberica_checksum_algorithm }} | [0]"
   set_fact:
-    liberica_win_download_url_fact: "{{ liberica_releases.json | json_query(query_download_url) }}"
-    liberica_win_filename_fact: "{{ liberica_releases.json | json_query(query_filename) }}"
-    liberica_win_checksum_fact: "{{ liberica_releases.json | json_query(query_checksum) }}"
+    liberica_win_download_url_fact:
+      "{{ liberica_win_download_url
+      | default(liberica_releases.json
+      | json_query(query_download_url)) }}"
+    liberica_win_filename_fact:
+      "{{ liberica_win_filename
+      | default(liberica_releases.json
+      | json_query(query_filename)) }}"
+    liberica_win_checksum_fact:
+      "{{ liberica_releases.json
+      | json_query(query_checksum) }}"
 
 - debug:
     msg: >
@@ -64,21 +90,26 @@
   when: ansible_system == 'Linux'
   block:
     - set_fact:
-        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}"
+        liberica_java_linux_package_name_fact:
+          "bellsoft-java{{ liberica_version_number_fact }}"
       when: liberica_java_bundletype == 'jdk'
     - set_fact:
-        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-full"
+        liberica_java_linux_package_name_fact:
+          "bellsoft-java{{ liberica_version_number_fact }}-full"
       when: liberica_java_bundletype == 'jdk-full'
     - set_fact:
-        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-lite"
+        liberica_java_linux_package_name_fact:
+          "bellsoft-java{{ liberica_version_number_fact }}-lite"
       when:
         - liberica_java_bundletype == 'jdk-lite'
         - liberica_java_version != 8
     - set_fact:
-        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-runtime"
+        liberica_java_linux_package_name_fact:
+          "bellsoft-java{{ liberica_version_number_fact }}-runtime"
       when: liberica_java_bundletype == 'jre'
     - set_fact:
-        liberica_java_linux_package_name_fact: "bellsoft-java{{ liberica_version_number_fact }}-runtime-full"
+        liberica_java_linux_package_name_fact:
+          "bellsoft-java{{ liberica_version_number_fact }}-runtime-full"
       when: liberica_java_bundletype == 'jre-full'
 
     # "bundleType": "jdk",
