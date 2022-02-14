@@ -3,12 +3,14 @@
   win_file:
     path: "{{ liberica_windows_local_download_path }}"
     state: directory
+
 - name: Download BellSoft Java 4 Windows
   win_get_url:
     url: '{{ liberica_win_download_url_fact }}'
     dest: '{{ liberica_windows_local_download_path }}\{{ liberica_win_filename_fact }}'
     checksum: '{{ liberica_win_checksum_fact }}'
     checksum_algorithm: '{{ liberica_checksum_algorithm }}'
+
 - name: Install BellSoft Java 4 Windows
   win_package:
     path: '{{ liberica_windows_local_download_path }}\{{ liberica_win_filename_fact }}'
