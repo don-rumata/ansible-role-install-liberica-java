@@ -1,6 +1,6 @@
 # Ansible Role: Install Liberica Java
 
-[![License][license-image]][license-url] [![Ansible Galaxy][ansible-galaxy-image]][ansible-galaxy-url] [![CircleCI][circleci-image]][circleci-url] [![Ansible Galaxy Quality][ansible-galaxy-quality-image]][ansible-galaxy-url]
+[![License][license-image]][license-url] [![Ansible Galaxy][ansible-galaxy-image]][ansible-galaxy-url] [![CircleCI][circleci-image]][circleci-url] [![Ansible Galaxy Quality][ansible-galaxy-quality-image]][ansible-galaxy-url] [![Ansible Galaxy Release][ansible-galaxy-release-image]][ansible-galaxy-url]
 
 Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
 
@@ -29,7 +29,6 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
         - testing
     - name: EL (CentOS)
       versions:
-        - 7
         - 8
     - name: opensuse
       vesrion:
@@ -44,7 +43,7 @@ Install [Liberica Java](https://bell-sw.com/) for Linux and Windows.
 
 ## Dependencies
 
-min_ansible_version: 2.7
+min_ansible_version: 2.9
 
 In Ansible controller: [python-jmespath](https://repology.org/project/python:jmespath)
 
@@ -82,6 +81,9 @@ liberica_win_installationtype: installer
 liberica_win_bitness: 64
 liberica_win_architecture: x86
 
+# Custom url with msi-installer
+# liberica_win_download_url: http://10.10.10.10/soft/bellsoft/liberica/latestlts/bellsoft-jdk-latest-windows-amd64-full.msi
+
 #--- About bundle type ---#
 # https://bell-sw.com/pages/repositories#packages-versioning
 
@@ -108,6 +110,22 @@ Download and install [Windows Management Framework 5.1](https://www.microsoft.co
 
 Quick config WinRM for Windows: <https://ru.stackoverflow.com/a/949971/191416>
 
+### How to install role
+
+Over `ansible-galaxy`:
+
+```bash
+ansible-galaxy install don_rumata.ansible_role_install_liberica_java
+```
+
+Over `bash+git`:
+
+```bash
+mkdir -p "$HOME/.ansible/roles"
+cd "$HOME/.ansible/roles"
+git clone https://github.com/don-rumata/ansible-role-install-virtual_guest_tools don_rumata.ansible_role_install_liberica_java
+```
+
 ## Example Playbooks
 
 ### I
@@ -123,7 +141,7 @@ Install latest stable supported LTS `JRE+JDK+JavaFX` on Windows or Linux over pa
   serial:
     - "100%"
   roles:
-    - ansible-role-install-liberica-java
+    - don_rumata.ansible_role_install_liberica_java
   tasks:
 ```
 
@@ -140,7 +158,7 @@ Install only Java SE Runtime Environment `v8`:
   serial:
     - "100%"
   roles:
-    - ansible-role-install-liberica-java
+    - don_rumata.ansible_role_install_liberica_java
   vars:
     liberica_java_version: 8
     liberica_java_bundletype: jre
@@ -170,13 +188,13 @@ win7-64
   serial:
     - "100%"
   roles:
-    - role: ansible-role-install-liberica-java
+    - role: don_rumata.ansible_role_install_liberica_java
       liberica_java_version: 8
       liberica_java_bundletype: jre
-    - role: ansible-role-install-liberica-java
+    - role: don_rumata.ansible_role_install_liberica_java
       liberica_java_version: 11
       liberica_java_bundletype: jdk-lite
-    - role: ansible-role-install-liberica-java
+    - role: don_rumata.ansible_role_install_liberica_java
       liberica_java_version: 14
       liberica_java_bundletype: jdk
   tasks:
@@ -245,3 +263,5 @@ Apache License, Version 2.0
 [circleci-url]: https://circleci.com/gh/don-rumata/ansible-role-install-liberica-java
 
 [ansible-galaxy-quality-image]: https://img.shields.io/ansible/quality/48410
+
+[ansible-galaxy-release-image]: https://img.shields.io/github/v/release/don-rumata/ansible-role-install-liberica-java.svg?include_prereleases
