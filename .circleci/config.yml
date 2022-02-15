@@ -100,8 +100,8 @@ executors:
     resource_class: << pipeline.parameters.parameter-resource-class >>
     working_directory: << pipeline.parameters.parameter-working-directory >>
     docker:
-      # - image: geerlingguy/docker-centos8-ansible
-      - image: diodonfrost/ansible-centos:8
+      - image: geerlingguy/docker-centos8-ansible
+      # - image: diodonfrost/ansible-centos:8
 
   executor-opensuse-15-1:
     resource_class: << pipeline.parameters.parameter-resource-class >>
@@ -191,5 +191,5 @@ workflows:
       # TODO
       # - job-run-ansible-in-debian-testing
       # - job-run-ansible-in-centos-7
-      # - job-run-ansible-in-centos-8
+      - job-run-ansible-in-centos-8
       - job-run-ansible-in-opensuse-15-1
