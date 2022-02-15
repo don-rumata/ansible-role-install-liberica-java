@@ -191,5 +191,5 @@ workflows:
       # TODO
       # - job-run-ansible-in-debian-testing
       # - job-run-ansible-in-centos-7
-      - job-run-ansible-in-centos-8
+      # - job-run-ansible-in-centos-8
       - job-run-ansible-in-opensuse-15-1
