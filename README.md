@@ -123,7 +123,7 @@ Over `bash+git`:
 ```bash
 mkdir -p "$HOME/.ansible/roles"
 cd "$HOME/.ansible/roles"
-git clone https://github.com/don-rumata/ansible-role-install-virtual_guest_tools don_rumata.ansible_role_install_liberica_java
+git clone https://github.com/don-rumata/ansible-role-install-liberica-java don_rumata.ansible_role_install_liberica_java
 ```
 
 ## Example Playbooks
