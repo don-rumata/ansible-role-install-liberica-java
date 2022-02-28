@@ -30,6 +30,8 @@ liberica_win_installationtype: installer
 liberica_win_bitness: 64
 liberica_win_architecture: x86
 
+liberica_win_filename: "{{ liberica_win_download_url | urlsplit('path') | basename }}"
+
 # Custom url with msi-installer
 # liberica_win_download_url: http://10.10.10.10/soft/bellsoft/liberica/latestlts/bellsoft-jdk-latest-windows-amd64-full.msi
 
