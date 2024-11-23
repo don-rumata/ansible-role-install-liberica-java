@@ -5,7 +5,7 @@
     - ansible_os_family == 'Debian'
     - ansible_pkg_mgr == 'apt'
     - ansible_architecture == 'x86_64'
-  become: yes
+  become: true
   block:
     - apt_key:
         url: '{{ liberica_gpg_key_url }}'
@@ -31,15 +31,15 @@
 - name: Add repo 4 Liberica Java 4 Fedora\CentOS\RHEL
   when:
     - ansible_os_family == 'RedHat'
-  become: yes
+  become: true
   yum_repository:
     file: bellsoft
     name: BellSoft
     description: BellSoft Repository
     baseurl: '{{ http_or_https }}://yum.bell-sw.com'
     gpgkey: '{{ liberica_gpg_key_url }}'
-    enabled: yes
-    gpgcheck: yes
+    enabled: true
+    gpgcheck: true
     state: present
   tags:
     - linux
@@ -59,13 +59,13 @@
     - ansible_system == 'Linux'
     - ansible_os_family == 'Suse'
     - ansible_pkg_mgr == 'zypper'
-  become: yes
+  become: true
   zypper_repository:
     name: 'BellSoft Repository'
     repo: '{{ http_or_https }}://yum.bell-sw.com'
     state: present
-    auto_import_keys: yes
-    runrefresh: yes
+    auto_import_keys: true
+    runrefresh: true
   tags:
     - linux
     - suse
@@ -80,7 +80,7 @@
 
 - name: Install BellSoft Java 4 Linux
   when: ansible_system == 'Linux'
-  become: yes
+  become: true
   package:
     name: "{{ liberica_java_linux_package_name_fact }}"
     state: present

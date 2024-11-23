@@ -6,7 +6,7 @@
     url: "{{ liberica_api_releases_url }}"
     method: GET
     body_format: raw
-    return_content: yes
+    return_content: true
   delegate_to: localhost
   register: liberica_releases
 

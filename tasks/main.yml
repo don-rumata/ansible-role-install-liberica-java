@@ -11,7 +11,7 @@
 - import_tasks: install-4-windows.yml
   when:
     - ansible_os_family == 'Windows'
-  become: yes
+  become: true
   become_method: runas
   become_flags: logon_type=new_credentials logon_flags=netcredentials_only
   tags:
